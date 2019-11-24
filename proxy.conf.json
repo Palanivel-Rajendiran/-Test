@@ -1,0 +1,8 @@
+{
+  "/Fantestico": {
+    "target": "http://13.235.191.136:8080",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "info"
+  }
+}

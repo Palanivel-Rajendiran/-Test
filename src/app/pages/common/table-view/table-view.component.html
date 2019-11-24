@@ -1,0 +1,10 @@
+<nb-card>
+  <nb-card-header>
+    {{ settings.title }}
+    <input #search class="search-input-field" type="text" nbInput shape="semi-round" placeholder="Search..." (keyup)="onSearch(search.value)">
+  </nb-card-header>
+  <nb-card-body>
+    <ng2-smart-table [settings]="settings" [source]="source" (custom)="onCustom($event)">
+    </ng2-smart-table>
+  </nb-card-body>
+</nb-card>

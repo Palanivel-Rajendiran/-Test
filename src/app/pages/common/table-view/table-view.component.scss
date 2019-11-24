@@ -1,0 +1,17 @@
+@import '../../../@theme/styles/themes';
+
+@include nb-install-component() {
+  nb-card {
+    transform: translate3d(0, 0, 0);
+  }
+  nb-card-body {
+    padding-bottom: 35px;
+  }
+  ng2-st-tbody-custom {
+    display: inline-flex;
+  }
+}
+.search-input-field {
+  position: relative;
+  float: right;
+}
