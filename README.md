@@ -1,3 +1,8 @@
+### Setup Config
+
+- Node Version: v12.13(8+)
+- npm: 6.12.1
+
 ### What's included:
 
 - Angular 8+ & Typescript
