@@ -44,20 +44,20 @@ export class ApiService {
 
   // List of Test scenarios
   testScenariosByProject() {
-    // const params = {
-    //   project_Code: this.localStorageService.getValue('project_code'),
-    //   detRequirement_Code: this.localStorageService.getValue('detRequirement_code')
-    // };
-    return this.service.get('/Fantestico/testscen', {});
+    const params = {
+      project_Code: this.localStorageService.getValue('project_code'),
+      detRequirement_Code: this.localStorageService.getValue('detRequirement_code')
+    };
+    return this.service.get('/Fantestico/testscen', params);
   }
 
   // List of Test Cases
   testCasesByProject() {
-    // const params = {
-    //   project_code: this.localStorageService.getValue('project_code'),
-    //   requirement_code: this.localStorageService.getValue('detRequirement_code')
-    // };
-    return this.service.get('/Fantestico/testcasewithdata', {});
+    const params = {
+      project_code: this.localStorageService.getValue('project_code'),
+      requirement_code: this.localStorageService.getValue('detRequirement_code')
+    };
+    return this.service.get('/Fantestico/testcasewithdata', params);
   }
 
   testExecutionByProject() {
@@ -71,7 +71,7 @@ export class ApiService {
 
   // Defects List
   defectsList() {
-    return this.service.get('/Fantestico/defectlistall?IsActive=A');
+    return this.service.get('/Fantestico/defectlistall?IsActive=A', {});
   }
 
 }
