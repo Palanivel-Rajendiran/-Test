@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, Output, EventEmitter } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 import _ from 'lodash';
 
@@ -11,6 +11,7 @@ export class TableViewComponent implements OnInit, OnChanges {
 
   @Input() settings: any = {};
   @Input() data: [] = [];
+  @Output() action = new EventEmitter<boolean>();
 
 
   dataSource: any[];
@@ -32,7 +33,7 @@ export class TableViewComponent implements OnInit, OnChanges {
   //Custom Action Click Callback
   //data: contains data object with action clicked info
   onCustom(data :any) {
-    console.log(data);
+    this.action.emit(data);
   }
   
   //TODO: Not supported from ng2 start table

@@ -91,8 +91,13 @@ $nb-themes: nb-register-theme((
   display: none !important;
 }
 .nb-theme-default ng2-smart-table .ng2-smart-actions a.ng2-smart-action {
-  display: inline !important;
+  display: inline-flex !important;
+  padding: 2px !important;
   border-right: none !important;
-  position: relative;
-  left: 10px;
+}
+ng2-st-tbody-custom {
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
 }

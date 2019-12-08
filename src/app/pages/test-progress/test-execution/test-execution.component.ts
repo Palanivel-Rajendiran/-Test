@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../@core/utils';
+import { ApiService, LocalStorageService } from '../../../@core/utils';
+import { Router } from '@angular/router';
+import _ from 'lodash';
 
 @Component({
   selector: 'ngx-test-execution',
@@ -17,7 +19,7 @@ export class TestExecutionComponent implements OnInit {
       edit: false,
       delete: false,
       class: 'action-column',
-      custom: [{ name: 'ourCustomAction', title: '<i class="nb-list"></i>' }],
+      custom: [{ name: 'onList', title: '<i class="ion-navicon-round" title="List"></i>' }],
       position: 'right'
     },
     columns: {
@@ -51,8 +53,8 @@ export class TestExecutionComponent implements OnInit {
   data: any[];
 
   // Fetch the data from Api Service
-  constructor(private ApiService: ApiService) {
-    this.ApiService.testExecutions().subscribe(
+  constructor(private ApiService: ApiService, private localStorageService: LocalStorageService, private router: Router) {
+    this.ApiService.projectsByTestProgress().subscribe(
       resp => this.processApiResponse(resp),
       error => console.log(error)
     );
@@ -66,4 +68,19 @@ export class TestExecutionComponent implements OnInit {
     this.data = resp.data;
   }
 
+  //Action Clicks
+  onAction(data: any) {
+    let storeKeys;
+    switch(data.action) {
+      case 'onList':
+        storeKeys = _.pick(data.data, ['project_Code', 'DetRequirement_Code']);
+        this.localStorageService.setValues(storeKeys);
+        this.router.navigate(['/pages/test-progress/test-execution/list']);
+        break;
+        break;
+      default:
+        console.log('No Action Required');
+    }
+    console.log('TEst Plan ', data);
+  }
 }

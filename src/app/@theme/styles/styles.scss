@@ -31,3 +31,19 @@
 
   @include nb-overrides();
 };
+
+[class^="ion"] {
+  font-size: 26px;
+  padding: 6px;
+}
+
+th.ng2-smart-actions {
+  text-align: center;
+}
+.align-right-add {
+  float: right;
+  margin: 0px 0px 0px 12px;
+  cursor: pointer;
+  color: #4169e1;
+  font-size: 32px;
+}
