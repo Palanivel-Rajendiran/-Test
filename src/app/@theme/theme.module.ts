@@ -12,7 +12,19 @@ import {
   NbSelectModule,
   NbIconModule,
   NbThemeModule,
-  NbTooltipModule
+  NbTooltipModule,
+  NbStepperModule,
+  NbChatModule,
+  NbDatepickerModule,
+  NbDialogModule,
+  NbToastrModule,
+  NbWindowModule,
+  NbCardModule, 
+  NbInputModule, 
+  NbTreeGridModule,
+  NbTabsetModule,
+  NbRadioModule,
+  NbListModule,
 } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { NbSecurityModule } from '@nebular/security';
@@ -52,7 +64,19 @@ const NB_MODULES = [
   NbSelectModule,
   NbIconModule,
   NbEvaIconsModule,
-  NbTooltipModule
+  NbTooltipModule,
+  NbStepperModule,
+  NbChatModule,
+  NbDatepickerModule,
+  NbDialogModule,
+  NbToastrModule,
+  NbWindowModule,
+  NbCardModule, 
+  NbInputModule, 
+  NbTreeGridModule,
+  NbTabsetModule,
+  NbRadioModule,
+  NbListModule,
 ];
 const COMPONENTS = [
   HeaderComponent,
@@ -72,7 +96,7 @@ const PIPES = [
 
 @NgModule({
   imports: [CommonModule, ...NB_MODULES],
-  exports: [CommonModule, ...PIPES, ...COMPONENTS],
+  exports: [CommonModule, ...PIPES, ...COMPONENTS, ...NB_MODULES],
   declarations: [...COMPONENTS, ...PIPES],
 })
 export class ThemeModule {

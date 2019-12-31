@@ -4,6 +4,7 @@ import { ApiService } from './api.service';
 import { HttpService } from './http.service'
 import { InterceptorService } from './http.interceptor';
 import { LocalStorageService } from './localStorage.service';
+import { AppDataService } from './app.data.service';
 
 export {
   LayoutService,
@@ -11,5 +12,6 @@ export {
   ApiService,
   HttpService,
   InterceptorService,
-  LocalStorageService
+  LocalStorageService,
+  AppDataService
 };

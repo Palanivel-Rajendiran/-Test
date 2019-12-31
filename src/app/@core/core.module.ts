@@ -11,7 +11,8 @@ import {
   ApiService,
   HttpService,
   InterceptorService,
-  LocalStorageService
+  LocalStorageService,
+  AppDataService
 } from './utils';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { UserData } from './data/users';
@@ -71,7 +72,8 @@ export const NB_CORE_PROVIDERS = [
   StateService,
   ApiService,
   HttpService,
-  LocalStorageService
+  LocalStorageService,
+  AppDataService
 ];
 
 @NgModule({

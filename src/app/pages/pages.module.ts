@@ -1,12 +1,11 @@
 import { NgModule } from '@angular/core';
-import { NbMenuModule, NbCardModule, NbIconModule, NbInputModule, NbTreeGridModule } from '@nebular/theme';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { ThemeModule } from '../@theme/theme.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PagesComponent } from './pages.component';
-import { DashboardModule } from './dashboard/dashboard.module';
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { PagesRoutingModule } from './pages-routing.module';
 import { ProjectsComponent } from './project/projects/projects.component';
-import { TableViewComponent } from './common/table-view/table-view.component';
 import { TestProgressComponent } from './test-progress/test-progress.component';
 import { TestExecutionComponent } from './test-progress/test-execution/test-execution.component';
 import { TestPlanComponent } from './project/test-plan/test-plan.component';
@@ -23,23 +22,45 @@ import { TestCasesListComponent } from './test-progress/test-cases/test-cases-li
 import { TestCasesFormComponent } from './test-progress/test-cases/test-cases-form/test-cases-form.component';
 import { TestExecutionListComponent } from './test-progress/test-execution/test-execution-list/test-execution-list.component';
 import { TestExecutionFormComponent } from './test-progress/test-execution/test-execution-form/test-execution-form.component';
+import { TableViewComponent } from './common/table-view/table-view.component';
+// Material Angular Imports
+//TODO : Have to move into common Module
+import {
+  MatInputModule,
+  MatAutocompleteModule,
+  MatSelectModule,
+  MatDatepickerModule,
+  MatNativeDateModule,
+  MatToolbarModule,
+  MatStepperModule,
+  MAT_DATE_FORMATS,
+  DateAdapter,
+  MAT_DATE_LOCALE
+} from '@angular/material';
+import {MomentDateAdapter} from '@angular/material-moment-adapter';
+import { AppConstants } from '../@core/utils/constants';
+import { ProjectEmployeeRoleMapListComponent } from './project/projects/project-employee-role-map-list/project-employee-role-map-list.component';
 
 @NgModule({
   imports: [
     PagesRoutingModule,
     ThemeModule,
-    NbMenuModule,
-    NbCardModule,
-    NbIconModule,
-    NbInputModule,
-    NbTreeGridModule,
+    FormsModule,
+    ReactiveFormsModule,
     Ng2SmartTableModule,
-    DashboardModule
+    MatInputModule,
+    MatAutocompleteModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatToolbarModule,
+    MatStepperModule,
   ],
   declarations: [
+    TableViewComponent,
+    DashboardComponent,
     PagesComponent,
     ProjectsComponent,
-    TableViewComponent,
     TestProgressComponent,
     TestExecutionComponent,
     TestPlanComponent,
@@ -56,6 +77,14 @@ import { TestExecutionFormComponent } from './test-progress/test-execution/test-
     TestCasesFormComponent,
     TestExecutionListComponent,
     TestExecutionFormComponent,
+    ProjectEmployeeRoleMapListComponent,
+  ],
+  exports: [
+    ProjectEmployeeRoleMapListComponent,
+  ],
+  providers: [
+    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
+    {provide: MAT_DATE_FORMATS, useValue: AppConstants.DATE_FORMATS},
   ],
 })
 export class PagesModule {

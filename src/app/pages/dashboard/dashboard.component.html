@@ -1,3 +1,18 @@
 <div class="row">
-  Dashboard Works!
+  <div class="col-lg-12">
+    <mat-toolbar>
+      <span>Grid Performance[Scaling Test]</span>
+      <span class="example-spacer"></span>
+      <span class="mock-options">
+        <mat-form-field>
+          <mat-select placeholder="Mock Data By" [(ngModel)]="mockby" (ngModelChange)="initProjectsSummary()">
+            <mat-option *ngFor="let option of options" [value]="option">
+              {{ option }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field> <br/><br/>
+      </span>
+    </mat-toolbar>
+    <ngx-table-view [settings]="settings" [data]="data" (action)="onAction($event)"></ngx-table-view>
+  </div>
 </div>

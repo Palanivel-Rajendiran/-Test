@@ -4,6 +4,7 @@
 @import 'themes';
 
 // framework component themes (styles tied to theme variables)
+@import '~@nebular/theme/styles/prebuilt/default.css';
 @import '~@nebular/theme/styles/globals';
 @import '~@nebular/auth/styles/all';
 
@@ -47,3 +48,18 @@ th.ng2-smart-actions {
   color: #4169e1;
   font-size: 32px;
 }
+
+.mat-toolbar {
+  color: #8F9BB6;
+}
+
+.btn-right {
+  float: right;
+}
+
+.btn-left {
+  float: left;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
