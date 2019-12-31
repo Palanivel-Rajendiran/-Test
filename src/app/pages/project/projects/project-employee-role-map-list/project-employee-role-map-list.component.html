@@ -1,0 +1,46 @@
+<div class="row employeesRoleNResponForm" [formGroup]="employeesRoleNResponForm">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-2">
+                <mat-form-field>
+                    <mat-select formControlName="Role_Code" placeholder="Role *">
+                        <mat-option *ngFor="let role of rolesList" [value]="role.Role_Code">
+                        {{ role.Role_Name }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-3">
+                <mat-form-field>
+                    <mat-select formControlName="Employee_Code" placeholder="Employee *">
+                        <mat-option *ngFor="let employee of employeesList" [value]="employee.emp_Code">
+                        {{ employee.emp_First_Name + ' ' + employee.emp_Last_Name }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-2">
+                <mat-form-field>
+                    <input disabled formControlName="BV_Name" matInput placeholder="Business Vertical">
+                </mat-form-field>
+            </div>
+            <div [hidden]="true">
+                <input formControlName="BV_Code" matInput placeholder="Business Vertical">
+            </div>
+            <div class="col-md-3">
+                <mat-form-field>
+                    <input disabled formControlName="Responsibilities" matInput placeholder="Responsibilities">
+                </mat-form-field>
+            </div>
+            <div class="col-md-2">
+                <section>
+                    <input type="checkbox" formControlName="Signoff_Ind" ngDefaultControl placeholder="signOff">Sign Off
+                </section>
+            </div>
+            <div [hidden]="true">
+                <input formControlName="Signoff_Ind_Original" matInput>
+            </div>
+        </div>
+    </div>
+</div>
+    
