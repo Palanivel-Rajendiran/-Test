@@ -4,7 +4,7 @@ import { Observable, forkJoin } from 'rxjs';
 import _ from 'lodash';
 
 @Injectable()
-//Http Service is use by to communicate with servers(backend)
+// Http Service is use by to communicate with servers(backend)
 export class HttpService {
 
   constructor(private http: HttpClient) {
@@ -39,7 +39,7 @@ export class HttpService {
 
   // Post multiple records at once
   forkJoinPost(list: any[]): Observable<any[]> {
-    return forkJoin(list)
+    return forkJoin(list);
   }
 
 }

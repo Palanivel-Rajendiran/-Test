@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService, AppDataService } from '../../@core/utils'
+import { ApiService, AppDataService } from '../../@core/utils';
 
 @Component({
   selector: 'ngx-dashboard',
@@ -22,9 +22,9 @@ export class DashboardComponent implements OnInit {
       custom: [
         { name: 'onView', title: '<i class="ion-eye" title="View project"></i>' },
         { name: 'onEdit', title: '<i class="nb-edit" title="Edit project"></i>' },
-        { name: 'onDelete', title: '<i class="nb-trash" title="Delete project"></i>' }
+        { name: 'onDelete', title: '<i class="nb-trash" title="Delete project"></i>' },
       ],
-      position: 'right'
+      position: 'right',
     },
     columns: {
       Project_Code: {
@@ -42,13 +42,13 @@ export class DashboardComponent implements OnInit {
       Project_Description: {
         title: 'Project Description',
         type: 'string',
-      }
-    }
+      },
+    },
   };
 
   data: any[];
   constructor(private ApiService: ApiService, private AppDataService: AppDataService) {
-    
+
   }
 
   ngOnInit() {
@@ -60,7 +60,7 @@ export class DashboardComponent implements OnInit {
       (resp: any) => {
         this.data = resp.data;
       },
-      error => console.log(error)
+      error => console.log(error),
     );
   }
 

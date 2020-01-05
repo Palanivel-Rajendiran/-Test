@@ -10,7 +10,19 @@ export class AppDataService {
   keyValueAPIList: string[] = ['PROJ-STAT-CD', 'SDLC-MTHD-CD', 'PROJ-TYP-CD', 'DEFECTMGMT-TOOL-CD', 'AUTOEXEC-TSTTOOL-CD', 'PROJ-STAT-IND', 'HYBRID'];
   dataByServiceParam: object = {};
 
+  processNSaveProjectStat(data: any) {
+    if (data && data.length) {
+      this.dataByServiceParam['PROJ-STAT-CD_MAP'] = {};
+      _.each(data, (item: any) => {
+        this.dataByServiceParam['PROJ-STAT-CD_MAP'][item['KeyValue_Val_Cd']] = item['KeyValue_Desc'];
+      });
+    }
+  }
+
   setDataByServiceParams(response: any, mapParam: string) {
+    if (mapParam === 'PROJ-STAT-CD') {
+      this.processNSaveProjectStat(response.data);
+    }
     this.dataByServiceParam[mapParam] = response.data || [];
   }
 
@@ -21,46 +33,46 @@ export class AppDataService {
   initApiCall(mapParam: string) {
     const params = {
       KeyValue_Type_Cd: mapParam,
-      KeyValue_Lang_Cd: 'E'
+      KeyValue_Lang_Cd: 'E',
     };
     this.apiService.keyValueMap(params).subscribe(
       resp => this.setDataByServiceParams(resp, mapParam),
-      error => console.log(error)
+      error => console.log(error),
     );
   }
- 
+
   initBusinessVerticalParentsList() {
     this.apiService.businessVerticalParentsList().subscribe(
       resp => this.setDataByServiceParams(resp, 'BusinessVerticalParent'),
-      error => console.log(error)
+      error => console.log(error),
     );
   }
 
   initBusinessVerticalList() {
     this.apiService.businessVerticalList().subscribe(
       resp => this.setDataByServiceParams(resp, 'BusinessVertical'),
-      error => console.log(error)
+      error => console.log(error),
     );
   }
 
   initEmployessList() {
     this.apiService.employessList().subscribe(
       resp => this.setDataByServiceParams(resp, 'Employees'),
-      error => console.log(error)
+      error => console.log(error),
     );
   }
 
   initRolesList() {
     this.apiService.rolesList().subscribe(
       resp => this.setDataByServiceParams(resp, 'Roles'),
-      error => console.log(error)
+      error => console.log(error),
     );
   }
 
   initProjectsList() {
     this.apiService.listOfProjects().subscribe(
       resp => this.setDataByServiceParams(resp, 'Projects'),
-      error => console.log(error)
+      error => console.log(error),
     );
   }
 

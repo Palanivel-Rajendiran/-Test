@@ -1,7 +1,7 @@
 <nb-card>
   <nb-card-header>
     {{ settings.title }}
-    <i *ngIf="settings.isAddNew" [routerLink]="settings.isAddNew.routerLink" nbTooltip="This is a tooltip" nbTooltipPlacement="bottom" class="ion-plus-circled align-right-add" [title]="settings.isAddNew.title"></i>
+    <i *ngIf="settings.isAddNew" (click)="onAddNew()" [nbTooltip]="settings.isAddNew.title" nbTooltipPlacement="bottom" class="ion-plus-circled align-right-add"></i>
     <input #search class="search-input-field" type="text" nbInput shape="semi-round" placeholder="Search..." (keyup)="onSearch(search.value)">
   </nb-card-header>
   <nb-card-body>

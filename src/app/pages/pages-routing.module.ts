@@ -42,14 +42,14 @@ const routes: Routes = [{
             },
             {
               path: 'form-view',
-              component: ProjectFormComponent
+              component: ProjectFormComponent,
             },
             {
               path: '',
               redirectTo: 'list',
               pathMatch: 'full',
-            }
-          ]
+            },
+          ],
         },
         {
           path: 'test-plan',
@@ -60,25 +60,25 @@ const routes: Routes = [{
             },
             {
               path: 'form-view',
-              component: TestPlanFormComponent
+              component: TestPlanFormComponent,
             },
             {
               path: '',
               redirectTo: 'list',
               pathMatch: 'full',
-            }
-          ]
+            },
+          ],
         },
         {
           path: 'project-complete',
-          component: ProjectCompleteComponent
+          component: ProjectCompleteComponent,
         },
         {
           path: '',
           redirectTo: 'projects',
           pathMatch: 'full',
-        }
-      ]
+        },
+      ],
     },
     {
       path: 'test-progress',
@@ -96,14 +96,14 @@ const routes: Routes = [{
             },
             {
               path: 'form-view',
-              component: TestScenariosFormComponent
+              component: TestScenariosFormComponent,
             },
             {
               path: '',
               redirectTo: 'list',
               pathMatch: 'full',
-            }
-          ]
+            },
+          ],
         },
         {
           path: 'test-cases',
@@ -118,14 +118,14 @@ const routes: Routes = [{
             },
             {
               path: 'form-view',
-              component: TestCasesFormComponent
+              component: TestCasesFormComponent,
             },
             {
               path: '',
               redirectTo: 'list',
               pathMatch: 'full',
-            }
-          ]
+            },
+          ],
         },
         {
           path: 'test-execution',
@@ -140,35 +140,35 @@ const routes: Routes = [{
             },
             {
               path: 'form-view',
-              component: TestExecutionFormComponent
+              component: TestExecutionFormComponent,
             },
             {
               path: '',
               redirectTo: 'list',
               pathMatch: 'full',
-            }
-          ]
+            },
+          ],
         },
         {
           path: 'defects',
-          component: DefectsComponent
+          component: DefectsComponent,
         },
         {
           path: 'test-generation',
-          component: TestGenerationComponent
+          component: TestGenerationComponent,
         },
         {
           path: '',
           redirectTo: 'test-execution',
           pathMatch: 'full',
-        }
-      ]
+        },
+      ],
     },
     {
       path: '',
       redirectTo: 'dashboard',
       pathMatch: 'full',
-    }
+    },
   ],
 }];
 

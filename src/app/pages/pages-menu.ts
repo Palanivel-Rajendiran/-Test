@@ -22,8 +22,8 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Project Complete',
         link: '/pages/project/project-complete',
-      }
-    ]
+      },
+    ],
   },
   {
     title: 'Test Progress',
@@ -48,7 +48,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Test Generation',
         link: '/pages/test-progress/test-generation',
-      }
-    ]
-  }
+      },
+    ],
+  },
 ];

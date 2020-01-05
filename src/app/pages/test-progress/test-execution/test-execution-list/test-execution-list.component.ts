@@ -6,7 +6,7 @@ import _ from 'lodash';
 @Component({
   selector: 'ngx-test-execution-list',
   templateUrl: './test-execution-list.component.html',
-  styleUrls: ['./test-execution-list.component.scss']
+  styleUrls: ['./test-execution-list.component.scss'],
 })
 export class TestExecutionListComponent implements OnInit {
 
@@ -16,7 +16,7 @@ export class TestExecutionListComponent implements OnInit {
     hideSubHeader: true,
     isAddNew: {
       title: 'Add Test Execution',
-      routerLink: "/pages/test-progress/test-execution/form-view"
+      routerLink: '/pages/test-progress/test-execution/form-view',
     },
     actions: {
       add: false,
@@ -28,9 +28,9 @@ export class TestExecutionListComponent implements OnInit {
         { name: 'onView', title: '<i class="ion-plus" title="Add Test Execution"></i>' },
         { name: 'onView', title: '<i class="ion-eye" title="View Test Execution"></i>' },
         { name: 'onEdit', title: '<i class="nb-edit" title="Edit Test Execution"></i>' },
-        { name: 'onDelete', title: '<i class="nb-trash" title="Delete Test Execution"></i>' }
+        { name: 'onDelete', title: '<i class="nb-trash" title="Delete Test Execution"></i>' },
       ],
-      position: 'right'
+      position: 'right',
     },
     columns: {
       project_Name: {
@@ -63,14 +63,14 @@ export class TestExecutionListComponent implements OnInit {
       },
     },
   };
-  
+
   data: any[];
 
   // Fetch the data from Api Service
   constructor(private ApiService: ApiService, private localStorageService: LocalStorageService,  private router: Router) {
     this.ApiService.testExecutionByProject().subscribe(
       resp => this.processApiResponse(resp),
-      error => console.log(error)
+      error => console.log(error),
     );
   }
 
@@ -82,10 +82,10 @@ export class TestExecutionListComponent implements OnInit {
     this.data = resp.data;
   }
 
-  //Action Clicks
+  // Action Clicks
   onAction(data: any) {
     let storeKeys;
-    switch(data.action) {
+    switch (data.action) {
       case 'TestCases':
         storeKeys = _.pick(data.data, ['project_Code', 'detRequirement_Code']);
         this.localStorageService.setValues(storeKeys);
@@ -98,7 +98,7 @@ export class TestExecutionListComponent implements OnInit {
         this.router.navigate(['/pages/test-progress/test-execution/form-view']);
         break;
       case 'onDelete':
-        confirm('Are you really want to delete ?.')
+        confirm('Are you really want to delete ?.');
         break;
       default:
         console.log('No Action Required');

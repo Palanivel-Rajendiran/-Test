@@ -8,7 +8,7 @@ describe('TestGenerationComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TestGenerationComponent ]
+      declarations: [ TestGenerationComponent ],
     })
     .compileComponents();
   }));

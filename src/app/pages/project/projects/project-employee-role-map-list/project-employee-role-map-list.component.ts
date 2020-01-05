@@ -6,7 +6,7 @@ import _ from 'lodash';
 @Component({
   selector: 'ngx-project-employee-role-map-list',
   templateUrl: './project-employee-role-map-list.component.html',
-  styleUrls: ['./project-employee-role-map-list.component.scss']
+  styleUrls: ['./project-employee-role-map-list.component.scss'],
 })
 export class ProjectEmployeeRoleMapListComponent implements OnInit {
 
@@ -23,13 +23,13 @@ export class ProjectEmployeeRoleMapListComponent implements OnInit {
 
   employeesListByRole(roleCode: string) {
     const params = {
-      role_Code: roleCode
+      role_Code: roleCode,
     };
     this.ApiService.employeesByRole(params).subscribe(
       (resp: any) => {
         this.employeesList = resp.data;
       },
-      error => console.log(error)
+      error => console.log(error),
     );
   }
 

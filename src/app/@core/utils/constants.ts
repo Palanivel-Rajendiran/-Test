@@ -1,5 +1,5 @@
 export const AppConstants = {
-    NoWhiteSpaceReg: (".*\\S.*[a-zA-Z0-9_]+$"),
+    NoWhiteSpaceReg: ('.*\\S.*[a-zA-Z0-9_]+$'),
     DATE_FORMATS: {
         parse: {
           dateInput: 'LL',
@@ -10,5 +10,10 @@ export const AppConstants = {
           dateA11yLabel: 'LL',
           monthYearA11yLabel: 'YYYY',
         },
-    }
+    },
+    clearProjectInfoFromLocalStorageViews: [
+      '/pages/test-progress/test-cases/projects-list',
+      '/pages/test-progress/test-scenarios/projects-list',
+      '/pages/test-progress/test-execution/projects-list'
+    ]
 };

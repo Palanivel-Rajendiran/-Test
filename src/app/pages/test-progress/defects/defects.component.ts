@@ -4,7 +4,7 @@ import { ApiService } from '../../../@core/utils';
 @Component({
   selector: 'ngx-defects',
   templateUrl: './defects.component.html',
-  styleUrls: ['./defects.component.scss']
+  styleUrls: ['./defects.component.scss'],
 })
 export class DefectsComponent implements OnInit {
 
@@ -13,7 +13,7 @@ export class DefectsComponent implements OnInit {
     editable: false,
     hideSubHeader: true,
     isAddNew: {
-      title: 'Add Defect'
+      title: 'Add Defect',
     },
     actions: {
       add: false,
@@ -23,9 +23,9 @@ export class DefectsComponent implements OnInit {
       custom: [
         { name: 'onView', title: '<i class="ion-navicon-round" title="View Defect"></i>' },
         { name: 'onEdit', title: '<i class="nb-edit" title="Edit Defect"></i>' },
-        { name: 'onDelete', title: '<i class="nb-trash" title="Delete Defect"></i>' }
+        { name: 'onDelete', title: '<i class="nb-trash" title="Delete Defect"></i>' },
       ],
-      position: 'right'
+      position: 'right',
     },
     columns: {
       project_Code: {
@@ -43,8 +43,8 @@ export class DefectsComponent implements OnInit {
       BV_Name: {
         title: 'Business Vertical Name',
         type: 'string',
-      }
-    }
+      },
+    },
   };
 
   data: any[];
@@ -53,7 +53,7 @@ export class DefectsComponent implements OnInit {
   constructor(private ApiService: ApiService) {
     this.ApiService.defectsList().subscribe(
       resp => this.processApiResponse(resp),
-      error => console.log(error)
+      error => console.log(error),
     );
   }
 

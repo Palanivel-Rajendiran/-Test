@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService, AppDataService, LocalStorageService } from '../../../@core/utils';
 import { Router } from '@angular/router';
-
+import _ from 'lodash';
 
 @Component({
   selector: 'ngx-projects',
   templateUrl: './projects.component.html',
-  styleUrls: ['./projects.component.scss']
+  styleUrls: ['./projects.component.scss'],
 })
 export class ProjectsComponent implements OnInit {
 
@@ -16,7 +16,7 @@ export class ProjectsComponent implements OnInit {
     hideSubHeader: true,
     isAddNew: {
       title: 'Add Project',
-      routerLink: "/pages/project/projects/form-view"
+      routerLink: '/pages/project/projects/form-view',
     },
     actions: {
       add: false,
@@ -26,9 +26,9 @@ export class ProjectsComponent implements OnInit {
       custom: [
         { name: 'onView', title: '<i class="ion-eye" title="View project"></i>' },
         { name: 'onEdit', title: '<i class="nb-edit" title="Edit project"></i>' },
-        { name: 'onDelete', title: '<i class="nb-trash" title="Delete project"></i>' }
+        { name: 'onDelete', title: '<i class="nb-trash" title="Delete project"></i>' },
       ],
-      position: 'right'
+      position: 'right',
     },
     columns: {
       Project_Code: {
@@ -39,22 +39,22 @@ export class ProjectsComponent implements OnInit {
         title: 'Project Name',
         type: 'string',
       },
-      Project_Status: {
+      Project_Status_Desc: {
         title: 'Project Status',
         type: 'string',
       },
       Project_Description: {
         title: 'Project Description',
         type: 'string',
-      }
-    }
+      },
+    },
   };
 
   data: any[];
 
   // Fetch the Data From API Service
   constructor(private ApiService: ApiService, private router: Router, private AppDataService: AppDataService, private localStorageService: LocalStorageService) {
-    
+
   }
 
   ngOnInit() {
@@ -62,12 +62,16 @@ export class ProjectsComponent implements OnInit {
   }
 
   initProjectsSummary() {
+    const projStatusDescMap = this.AppDataService.getDataByServiceParams('PROJ-STAT-CD_MAP');
     this.ApiService.listOfProjects().subscribe(
       (resp: any) => {
-        this.data = resp.data;
+        this.data = _.map(resp.data, (proj: any) => {
+          proj['Project_Status_Desc'] = projStatusDescMap[proj['Project_Status']];
+          return proj;
+        });
         this.AppDataService.setDataByServiceParams(resp, 'Projects');
       },
-      error => console.log(error)
+      error => console.log(error),
     );
   }
 
@@ -76,13 +80,13 @@ export class ProjectsComponent implements OnInit {
       RequestId: record.Project_Code,
       ProcessId: 'Project',
       IsValid: 'Y',
-      IsComplete: 'N'
+      IsComplete: 'N',
     };
     this.ApiService.requestActionWorkFlow(params).subscribe(
       (resp: any) => {
         this.initDeleteProject(record);
       },
-      error => console.log(error)
+      error => console.log(error),
     );
   }
 
@@ -94,19 +98,19 @@ export class ProjectsComponent implements OnInit {
       (resp: any) => {
         this.initProjectsSummary();
       },
-      error => console.log(error)
+      error => console.log(error),
     );
   }
 
-  //Action Clicks
+  // Action Clicks
   onAction(data: any) {
-    switch(data.action) {
+    switch (data.action) {
       case 'onView':
         this.localStorageService.setValues({
           Project_Name: data.data.Project_Name,
           Sdlc_Method_Code: data.data.Sdlc_Method_Code,
           Project_Code: data.data.Project_Code,
-          Project_View_By: 'View'
+          Project_View_By: 'View',
         });
         this.router.navigate(['/pages/project/projects/form-view']);
         break;
@@ -115,7 +119,7 @@ export class ProjectsComponent implements OnInit {
           Project_Name: data.data.Project_Name,
           Sdlc_Method_Code: data.data.Sdlc_Method_Code,
           Project_Code: data.data.Project_Code,
-          Project_View_By: 'Edit'
+          Project_View_By: 'Edit',
         });
         this.router.navigate(['/pages/project/projects/form-view']);
         break;
@@ -128,6 +132,11 @@ export class ProjectsComponent implements OnInit {
         console.log('No Action Required');
     }
     console.log('TEst Plan ', data);
+  }
+
+  onAddNew() {
+    this.localStorageService.removeItems(['Project_Name', 'Sdlc_Method_Code', 'Project_Code', 'Project_View_By', 'DetRequirement_Code', 'DetRequirement_Name', 'DetRequirement_Version', 'Prod_Name', 'Prod_Code', 'Func_Code', ]);
+    this.router.navigate(['/pages/project/projects/form-view']);
   }
 
 }

@@ -8,7 +8,7 @@ describe('ProjectEmployeeRoleMapListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProjectEmployeeRoleMapListComponent ]
+      declarations: [ ProjectEmployeeRoleMapListComponent ],
     })
     .compileComponents();
   }));

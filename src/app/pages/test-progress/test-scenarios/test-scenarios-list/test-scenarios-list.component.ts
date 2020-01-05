@@ -6,7 +6,7 @@ import _ from 'lodash';
 @Component({
   selector: 'ngx-test-scenarios-list',
   templateUrl: './test-scenarios-list.component.html',
-  styleUrls: ['./test-scenarios-list.component.scss']
+  styleUrls: ['./test-scenarios-list.component.scss'],
 })
 export class TestScenariosListComponent implements OnInit {
 
@@ -16,7 +16,7 @@ export class TestScenariosListComponent implements OnInit {
     hideSubHeader: true,
     isAddNew: {
       title: 'Add Test Scenarios',
-      routerLink: "/pages/test-progress/test-scenarios/form-view"
+      routerLink: '/pages/test-progress/test-scenarios/form-view',
     },
     actions: {
       add: false,
@@ -27,9 +27,9 @@ export class TestScenariosListComponent implements OnInit {
         { name: 'TestCases', title: '<i class="ion-navicon-round" title="Show Test Case and Data"></i>' },
         { name: 'onView', title: '<i class="ion-eye" title="View Test Scenario"></i>' },
         { name: 'onEdit', title: '<i class="nb-edit" title="Edit Test Scenario"></i>' },
-        { name: 'onDelete', title: '<i class="nb-trash" title="Delete Test Scenario"></i>' }
+        { name: 'onDelete', title: '<i class="nb-trash" title="Delete Test Scenario"></i>' },
       ],
-      position: 'right'
+      position: 'right',
     },
     columns: {
       project_Name: {
@@ -62,14 +62,14 @@ export class TestScenariosListComponent implements OnInit {
       },
     },
   };
-  
+
   data: any[];
 
   // Fetch the data from Api Service
   constructor(private ApiService: ApiService, private localStorageService: LocalStorageService, private router: Router) {
     this.ApiService.testScenariosByProject().subscribe(
       resp => this.processApiResponse(resp),
-      error => console.log(error)
+      error => console.log(error),
     );
   }
 
@@ -81,10 +81,10 @@ export class TestScenariosListComponent implements OnInit {
     this.data = resp.data;
   }
 
-  //Action Clicks
+  // Action Clicks
   onAction(data: any) {
     let storeKeys;
-    switch(data.action) {
+    switch (data.action) {
       case 'TestCases':
         storeKeys = _.pick(data.data, ['project_Code', 'detRequirement_Code']);
         this.localStorageService.setValues(storeKeys);
@@ -97,7 +97,7 @@ export class TestScenariosListComponent implements OnInit {
         this.router.navigate(['/pages/test-progress/test-scenarios/form-view']);
         break;
       case 'onDelete':
-        confirm('Are you really want to delete ?.')
+        confirm('Are you really want to delete ?.');
         break;
       default:
         console.log('No Action Required');

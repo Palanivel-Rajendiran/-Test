@@ -4,7 +4,7 @@ import { LocalStorageService } from './localStorage.service';
 import _ from 'lodash';
 @Injectable()
 // Api Service is config of any view
-// API Methods, It'll eliminate the duplicate 
+// API Methods, It'll eliminate the duplicate
 // by view's
 export class ApiService {
 
@@ -15,7 +15,7 @@ export class ApiService {
   // Get the list of project
   listOfProjects() {
     const params = {
-      IsActive: 'A'
+      IsActive: 'A',
     };
     return this.service.get('/Fantestico/project', params);
   }
@@ -24,7 +24,7 @@ export class ApiService {
   testExecutions() {
     const params = {
       BusRequirement_Version: '1.0',
-      project_Code: this.localStorageService.getValue('project_code')
+      project_Code: this.localStorageService.getValue('project_code') || null,
     };
     return this.service.get('/Fantestico/dashboard/traceablityBusReqAndDetReq', params);
   }
@@ -32,8 +32,8 @@ export class ApiService {
   // Get the Project Complete
   projectComplete() {
     const params = {
-      project_Status: 200
-    }
+      project_Status: 200,
+    };
     return this.service.get('/Fantestico/dashboard/LandingPagegetsummery', params);
   }
 
@@ -46,7 +46,7 @@ export class ApiService {
   projectsByTestProgress() {
     const params = {
       BusRequirement_Version: '1.0',
-      project_Code: this.localStorageService.getValue('project_code')
+      project_Code: this.localStorageService.getValue('project_code') || null,
     };
     return this.service.get('/Fantestico/dashboard/traceablityBusReqAndDetReq', params);
   }
@@ -55,7 +55,7 @@ export class ApiService {
   testScenariosByProject() {
     const params = {
       project_Code: this.localStorageService.getValue('project_code'),
-      detRequirement_Code: this.localStorageService.getValue('detRequirement_code')
+      detRequirement_Code: this.localStorageService.getValue('detRequirement_code'),
     };
     return this.service.get('/Fantestico/testscen', params);
   }
@@ -63,8 +63,8 @@ export class ApiService {
   // List of Test Cases
   testCasesByProject() {
     const params = {
-      project_code: this.localStorageService.getValue('project_code'),
-      requirement_code: this.localStorageService.getValue('detRequirement_code')
+      project_code: this.localStorageService.getValue('project_code') || null,
+      requirement_code: this.localStorageService.getValue('detRequirement_code'),
     };
     return this.service.get('/Fantestico/testcasewithdata', params);
   }
@@ -72,8 +72,8 @@ export class ApiService {
   testExecutionByProject() {
     const params = {
       IsActive: 'A',
-      project_Code: this.localStorageService.getValue('project_code'),
-      DetRequirement_Code: this.localStorageService.getValue('detRequirement_code')
+      project_Code: this.localStorageService.getValue('project_code') || null,
+      DetRequirement_Code: this.localStorageService.getValue('detRequirement_code') || null,
     };
     return this.service.get('/Fantestico/testexecution', params);
   }
@@ -81,7 +81,7 @@ export class ApiService {
   // Defects List
   defectsList() {
     const params = {
-      IsActive: 'A'
+      IsActive: 'A',
     };
     return this.service.get('/Fantestico/defectlistall', params);
   }
@@ -99,35 +99,40 @@ export class ApiService {
   // Get all the Business Vertical List
   businessVerticalList() {
     const params = {
-      IsActive: 'A'
+      IsActive: 'A',
     };
     return this.service.get('/Fantestico/businessVertical', params);
   }
 
   // Get all the Employess List
   employessList() {
-    return this.service.get('/Fantestico/manageemp/getemployeeservice', {})
+    return this.service.get('/Fantestico/manageemp/getemployeeservice', {});
   }
 
   // Get all the Roles & Responsibility List
   rolesList() {
-    return this.service.get('/Fantestico/role', {})
+    return this.service.get('/Fantestico/role', {});
   }
 
-  //Save or Update the Project
+  // Save or Update the Project
   populateProject(params: Object) {
     return this.service.get('/Fantestico/project', params);
   }
-  //Save or Update the Project
-  saveOrUpdateProject(payload: Object) {
+  // Save the Project
+  saveProject(payload: Object) {
     return this.service.post('/Fantestico/project', payload);
   }
 
-  //Save or Update the Project
+  // Update the project
+  updateProject(payload: Object) {
+    return this.service.put('/Fantestico/project', payload);
+  }
+
+  // Save or Update the Project
   saveOrUpdateEmpRoleMapByProject(pList: any[]) {
-    pList = _.map(pList, (l:any) => {
+    pList = _.map(pList, (l: any) => {
       return this.service.post('/Fantestico/projectroleempmap', l);
-    })
+    });
     return this.service.forkJoinPost(pList);
   }
 
@@ -141,12 +146,16 @@ export class ApiService {
     return this.service.get('/Fantestico/getreqtprodnotassignedtoprojectedit', params);
   }
 
-  // Populate Roles & Resposibilities List By Project
-  rolesNResponsibilitiesListByProject(params: object) {
-    return this.service.get('/Fantestico/projectroleempmap', params)
+  populateAssignReqNProductsToView(params: object) {
+    return this.service.get('/Fantestico/getreqtprodnotassignedtoprojectview', params);
   }
 
-  //Get Employees list by role assigned
+  // Populate Roles & Resposibilities List By Project
+  rolesNResponsibilitiesListByProject(params: object) {
+    return this.service.get('/Fantestico/projectroleempmap', params);
+  }
+
+  // Get Employees list by role assigned
   employeesByRole(params: Object) {
     return this.service.get('/Fantestico/manageemp/getemployeefromrole', params);
   }
@@ -158,7 +167,7 @@ export class ApiService {
 
   // De-associate employee role map from project
   deAssociateEmployeeRoleFromProject(params: Object) {
-    return this.service.delete('/Fantestico/projectroleempmap', params)
+    return this.service.delete('/Fantestico/projectroleempmap', params);
   }
 
   // Delete the project
@@ -169,8 +178,29 @@ export class ApiService {
     return this.service.delete('/Fantestico/project', params);
   }
 
+  initialPopulateMapProductAttrByProject(params: object) {
+    return this.service.get('/Fantestico/manageorg/orgProdFuncAttriServ', params);
+  }
+
+  populateMapProductAttrDetail(params: object) {
+    return this.service.get('/Fantestico/orgmappedattributealias_attralias', params);
+  }
+
+  attributeValueTypeCodes(params) {
+    return this.service.get('/Fantestico/manage/getsetupvalue', params);
+  }
+
+  saveProjectDetail(payload) {
+    return this.service.post('/Fantestico/projectdetail', payload);
+  }
+
+  populateProjectDetail(params: object) {
+    return this.service.get('/Fantestico/projectdetail', params);
+  }
+
   // Same Data API Call
   mockData(count: Number) {
     return this.service.get('./assets/data/' + count + '.json', {});
   }
+
 }

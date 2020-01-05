@@ -12,6 +12,7 @@ export class TableViewComponent implements OnInit, OnChanges {
   @Input() settings: any = {};
   @Input() data: [] = [];
   @Output() action = new EventEmitter<boolean>();
+  @Output() addNew = new EventEmitter<boolean>();
 
 
   dataSource: any[];
@@ -30,18 +31,22 @@ export class TableViewComponent implements OnInit, OnChanges {
     this.noDataFoundWithCustomColumn();
   }
 
-  //Custom Action Click Callback
-  //data: contains data object with action clicked info
-  onCustom(data :any) {
+  // Custom Action Click Callback
+  // data: contains data object with action clicked info
+  onCustom(data: any) {
     this.action.emit(data);
   }
-  
-  //TODO: Not supported from ng2 start table
-  //Custom column span not extended in case of "no data found"
+
+  onAddNew() {
+    this.addNew.emit();
+  }
+
+  // TODO: Not supported from ng2 start table
+  // Custom column span not extended in case of "no data found"
   noDataFoundWithCustomColumn() {
     setTimeout(function() {
       const noDataFoundtd = document.querySelector('[colspan]');
-      if(noDataFoundtd) {
+      if (noDataFoundtd) {
         const updateColSpan: any = +noDataFoundtd.getAttribute('colspan') + 1;
         noDataFoundtd.setAttribute('colspan', updateColSpan);
       }
@@ -56,14 +61,14 @@ export class TableViewComponent implements OnInit, OnChanges {
           return {
             field: fName,
             search: query};
-          }
+          },
         ),
       false);
     } else {
       this.source.reset();
     }
     this.noDataFoundWithCustomColumn();
-    // second parameter specifying whether to perform 'AND' or 'OR' search 
+    // second parameter specifying whether to perform 'AND' or 'OR' search
     // (meaning all columns should contain search query or at least one)
     // 'AND' by default, so changing to 'OR' by setting false here
   }

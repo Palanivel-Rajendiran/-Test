@@ -12,7 +12,7 @@ import {
   HttpService,
   InterceptorService,
   LocalStorageService,
-  AppDataService
+  AppDataService,
 } from './utils';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { UserData } from './data/users';
@@ -73,13 +73,13 @@ export const NB_CORE_PROVIDERS = [
   ApiService,
   HttpService,
   LocalStorageService,
-  AppDataService
+  AppDataService,
 ];
 
 @NgModule({
   imports: [
     CommonModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   exports: [
     NbAuthModule,

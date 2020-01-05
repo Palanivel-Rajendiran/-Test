@@ -5,11 +5,12 @@ import { AppConstants } from  '../../../../@core/utils/constants';
 import { AppDataService, ApiService, LocalStorageService } from  '../../../../@core/utils';
 import _ from 'lodash';
 import { Router } from '@angular/router';
+import * as moment from 'moment';
 
 @Component({
   selector: 'ngx-project-form',
   templateUrl: './project-form.component.html',
-  styleUrls: ['./project-form.component.scss']
+  styleUrls: ['./project-form.component.scss'],
 })
 
 export class ProjectFormComponent implements OnInit, OnChanges, AfterViewInit {
@@ -43,7 +44,45 @@ export class ProjectFormComponent implements OnInit, OnChanges, AfterViewInit {
   mapAttributeSettings: any;
   mapAttributeData: any[];
   stepper: any;
-  
+  viewControl = {
+    manageProject: false,
+    employeeRoleMap: false,
+    projectScope: false,
+    mapProducts: false,
+    mapAttributes: false
+  }
+  AttrValidation = {
+    "Boolean": {
+      "mandatory": [1, 0, 0, 0],
+      "visibility": [1, 0, 0, 0],
+      "placeholders": ["T/F", "", "", ""],
+      "patterns": [/^(T|F|t|f)$/, null, null, null]
+    },
+    "Values": {
+      "mandatory": [1, 0, 0, 0],
+      "visibility": [1, 1, 0, 0],
+      "placeholders": ["", "", "", ""],
+      "patterns": [/(.\/)*/, /\w/, null, null]
+    },
+    "Date": {
+      "mandatory": [1, 0, 0, 0],
+      "visibility": [1, 1, 0, 0],
+      "placeholders": ["", "", "", ""],
+      "patterns": [/^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}$/, /^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}$/, null, null]
+    },
+    "KeyValue": {
+      "mandatory": [1, 0, 0, 0],
+      "visibility": [1, 0, 0, 0],
+      "placeholders": ["", "", "", ""],
+      "patterns": [null, null, null, null]
+    },
+    "Range": {
+      "mandatory": [1, 1, 0, 0],
+      "visibility": [1, 1, 1, 1],
+      "placeholders": ["", "", "", ""],
+      "patterns": [/^(\d)$/, /^(\d)$/, /^(\d)$/, /^(\d)$/]
+    }
+  };
   constructor(private fb: FormBuilder, private AppDataService: AppDataService,
     private ApiService: ApiService, private localStorageService: LocalStorageService, private router: Router) {
     this.businessVerticalList = this.AppDataService.getDataByServiceParams('BusinessVertical');
@@ -69,7 +108,7 @@ export class ProjectFormComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    
+
   }
 
   ngOnChanges() {
@@ -78,17 +117,21 @@ export class ProjectFormComponent implements OnInit, OnChanges, AfterViewInit {
   // Populate the project info by project id
   private initPopulateProjectInfo() {
     const params = {
-      Project_Code: this.localStorageService.getValue('Project_Code')
+      Project_Code: this.localStorageService.getValue('Project_Code'),
     };
     this.ApiService.populateProject(params).subscribe(
       (resp: any) => {
         if (resp.data && resp.data.length) {
+          resp.data[0].Project_Plan_Start_Date = moment(resp.data[0].Project_Plan_Start_Date);
+          resp.data[0].Project_Plan_End_Date = moment(resp.data[0].Project_Plan_End_Date);
+          resp.data[0].Project_Actl_Start_Date = resp.data[0].Project_Actl_Start_Date ? moment(resp.data[0].Project_Actl_Start_Date) : '';
+          resp.data[0].Project_Actl_End_Date = resp.data[0].Project_Actl_End_Date ? moment(resp.data[0].Project_Actl_End_Date) : '';
           this.manageProjectForm.patchValue(resp.data[0]);
           this.initProjectLevelListBySDLSMethod(resp.data[0].Sdlc_Method_Code);
           this.initParentProjectChange(resp.data[0].ParentProject_Code);
         }
       },
-      error => console.log(error)
+      error => console.log(error),
     );
   }
 
@@ -117,6 +160,8 @@ export class ProjectFormComponent implements OnInit, OnChanges, AfterViewInit {
     });
     if (this.localStorageService.getValue('Project_Code')) {
       this.initPopulateProjectInfo();
+    } else {
+      this.initProjectLevelListBySDLSMethod('HYBRID');
     }
   }
 
@@ -125,7 +170,7 @@ export class ProjectFormComponent implements OnInit, OnChanges, AfterViewInit {
     this.empRoleMapForm = this.fb.group({
       Project_Name: [{ value: this.localStorageService.getValue('Project_Name'), disabled: true }],
       Project_Code: [{ value: this.localStorageService.getValue('Project_Code'), disabled: true }],
-      ProjectEmpRoleList: this.fb.array([])
+      ProjectEmpRoleList: this.fb.array([]),
     });
   }
 
@@ -135,6 +180,12 @@ export class ProjectFormComponent implements OnInit, OnChanges, AfterViewInit {
       Project_Name: [{ value: this.localStorageService.getValue('Project_Name'), disabled: true }],
       Project_Code: [{ value: this.localStorageService.getValue('Project_Code'), disabled: true }],
     });
+    const actionsListConfig = [
+      { name: 'onMapProduct', title: '<i class="ion-link" title="Map Product"></i>' }
+    ];
+    if ( this.viewType !== 'View' ) {
+      actionsListConfig.push({ name: 'onDelete', title: '<i class="nb-trash" title="Delete Mapped Requirement"></i>' });
+    }
     this.requirementsNProductsSettings = {
       title: 'Assign Requirement and Products To This Project',
       editable: false,
@@ -145,11 +196,8 @@ export class ProjectFormComponent implements OnInit, OnChanges, AfterViewInit {
         edit: false,
         delete: false,
         class: 'custom-column',
-        custom: [
-          { name: 'onEdit', title: '<i class="nb-edit" title="Edit project"></i>' },
-          { name: 'onDelete', title: '<i class="nb-trash" title="Delete project"></i>' }
-        ],
-        position: 'right'
+        custom: actionsListConfig,
+        position: 'right',
       },
       columns: {
         DetRequirement_Code: {
@@ -179,8 +227,8 @@ export class ProjectFormComponent implements OnInit, OnChanges, AfterViewInit {
         Assigned_To_Project: {
           title: 'Assigned to Project',
           type: 'string',
-        }
-      }
+        },
+      },
     };
   }
 
@@ -189,21 +237,39 @@ export class ProjectFormComponent implements OnInit, OnChanges, AfterViewInit {
     let APIMethod;
     if (this.viewType === 'Create') {
       params = {
-        Sdlc_Method_Code: this.localStorageService.getValue('Sdlc_Method_Code')
+        Sdlc_Method_Code: this.localStorageService.getValue('Sdlc_Method_Code'),
       };
       APIMethod = this.ApiService.initialAssignReqNProducts(params);
-    } else {
+    } else if (this.viewType === 'Edit') {
       params = {
         Project_Code: this.localStorageService.getValue('Project_Code'),
         Sdlc_Method_Code: this.localStorageService.getValue('Sdlc_Method_Code')
       };
       APIMethod = this.ApiService.populateAssignReqNProductsToEdit(params);
+    } else {
+      params = {
+        Project_Code: this.localStorageService.getValue('Project_Code')
+      };
+      APIMethod = this.ApiService.populateAssignReqNProductsToView(params);
     }
     APIMethod.subscribe(
       (resp: any) => {
-        this.requirementsNProductsData = resp.data;
+        this.requirementsNProductsData = _.map(resp.data, (data: any) => {
+          let splitProdByComma = data.Product.split(",");
+          data.Product = _.map(splitProdByComma, (product: string) => {
+            return {
+              Prod_Code: product.split(':')[0],
+              Prod_Name: product.split(':')[1],
+              Func_Code: data.func_code,
+              DetRequirement_Name: data.DetRequirement_Name,
+              DetRequirement_Code: data.DetRequirement_Code,
+              DetRequirement_Version: data.DetRequirement_Version
+            };
+          });
+          return data;
+        });
       },
-      error => console.log(error)
+      error => console.log(error),
     );
   }
 
@@ -212,55 +278,33 @@ export class ProjectFormComponent implements OnInit, OnChanges, AfterViewInit {
     this.mapProductsForm = this.fb.group({
       Project_Name: [{ value: this.localStorageService.getValue('Project_Name'), disabled: true }],
       Project_Code: [{ value: this.localStorageService.getValue('Project_Code'), disabled: true }],
+      DetRequirement_Name: [{ value: this.localStorageService.getValue('DetRequirement_Name'), disabled: true }],
     });
     this.mapProductSettings = {
-      title: 'List Of Project',
+      title: 'Map Products',
       editable: false,
       hideSubHeader: true,
-      isAddNew: {
-        title: 'Add Project',
-        routerLink: "/pages/project/projects/form-view"
-      },
       actions: {
         add: false,
         edit: false,
         delete: false,
         class: 'custom-column',
         custom: [
-          { name: 'onView', title: '<i class="ion-eye" title="View project"></i>' },
-          { name: 'onEdit', title: '<i class="nb-edit" title="Edit project"></i>' },
-          { name: 'onDelete', title: '<i class="nb-trash" title="Delete project"></i>' }
+          { name: 'onMapAttribute', title: '<i class="ion-link" title="Map Attribute"></i>' },
         ],
-        position: 'right'
+        position: 'right',
       },
       columns: {
-        Project_Code: {
-          title: 'Project Code',
+        Prod_Code: {
+          title: 'Product Code',
           type: 'number',
         },
-        Project_Name: {
-          title: 'Project Name',
-          type: 'string',
-        },
-        Project_Status: {
-          title: 'Project Status',
-          type: 'string',
-        },
-        Project_Description: {
-          title: 'Project Description',
+        Prod_Name: {
+          title: 'Product Name',
           type: 'string',
         }
-      }
-    };
-  }
-
-  private initMapProductsList() {
-    this.ApiService.listOfProjects().subscribe(
-      (resp: any) => {
-        this.mapProductData = resp.data;
       },
-      error => console.log(error)
-    );
+    };
   }
 
   // Init Manage Project Form Objs
@@ -268,52 +312,10 @@ export class ProjectFormComponent implements OnInit, OnChanges, AfterViewInit {
     this.mapAttributesForm = this.fb.group({
       Project_Name: [{ value: this.localStorageService.getValue('Project_Name'), disabled: true }],
       Project_Code: [{ value: this.localStorageService.getValue('Project_Code'), disabled: true }],
+      DetRequirement_Name: [{ value: this.localStorageService.getValue('DetRequirement_Name'), disabled: true }],
+      Prod_Name: [{ value: this.localStorageService.getValue('Prod_Name'), disabled: true }],
+      MapProductAttributesList: this.fb.array([]),
     });
-    this.mapAttributeSettings = {
-      title: 'List Of Project',
-      editable: false,
-      hideSubHeader: true,
-      isAddNew: {
-        title: 'Add Project',
-        routerLink: "/pages/project/projects/form-view"
-      },
-      actions: {
-        add: false,
-        edit: false,
-        delete: false,
-        class: 'custom-column',
-        custom: [
-          { name: 'onView', title: '<i class="ion-eye" title="View project"></i>' },
-          { name: 'onEdit', title: '<i class="nb-edit" title="Edit project"></i>' },
-          { name: 'onDelete', title: '<i class="nb-trash" title="Delete project"></i>' }
-        ],
-        position: 'right'
-      },
-      columns: {
-        Project_Code: {
-          title: 'Project Code',
-          type: 'number',
-        },
-        Project_Name: {
-          title: 'Project Name',
-          type: 'string',
-        },
-        Project_Status: {
-          title: 'Project Status',
-          type: 'string',
-        },
-        Project_Description: {
-          title: 'Project Description',
-          type: 'string',
-        }
-      }
-    };
-    this.ApiService.listOfProjects().subscribe(
-      (resp: any) => {
-        this.mapAttributeData = resp.data;
-      },
-      error => console.log(error)
-    );
   }
 
   getEmployeeDetailsById(empCode: string) {
@@ -324,16 +326,16 @@ export class ProjectFormComponent implements OnInit, OnChanges, AfterViewInit {
     return _.find(this.rolesList, ['Role_Code', rCode]);
   }
 
-  private employeesRoleMap() {
-    let form = this.fb.group({
-      Role_Code: [{ value: '', disabled: this.viewType === 'view' }, Validators.compose([Validators.required])],
-      Employee_Code: [{ value: '', disabled: this.viewType === 'view' }, Validators.compose([Validators.required])],
-      BV_Code: [{ value: "", disabled: true }, Validators.compose([Validators.required])],
-      BV_Name: [{ value: "", disabled: true }, Validators.compose([Validators.required])],
+  private employeesRoleMap(isEnabled: boolean) {
+    const form = this.fb.group({
+      Role_Code: [{ value: '', disabled: this.viewType === 'view' || isEnabled }, Validators.compose([Validators.required])],
+      Employee_Code: [{ value: '', disabled: this.viewType === 'view' || isEnabled }, Validators.compose([Validators.required])],
+      BV_Code: [{ value: '', disabled: true }, Validators.compose([Validators.required])],
+      BV_Name: [{ value: '', disabled: true }, Validators.compose([Validators.required])],
       Responsibilities: [{ value: '', disabled: true }],
-      Signoff_Ind: [{ value: '', disable: this.viewType === 'view' }],
+      Signoff_Ind: [{ value: '', disable: this.viewType === 'view' || isEnabled}],
       Signoff_Ind_Original: [{ value: '' }, Validators.compose([Validators.required])],
-      Is_Associated: [{ value: false, disable: this.viewType === 'view' }]
+      Is_Associated: [{ value: false, disable: this.viewType === 'view' || isEnabled }],
     });
     form.get('Employee_Code').valueChanges.subscribe(value => {
       const data = this.getEmployeeDetailsById(value);
@@ -342,7 +344,7 @@ export class ProjectFormComponent implements OnInit, OnChanges, AfterViewInit {
     });
     form.get('Role_Code').valueChanges.subscribe(value => {
       const data = this.getRoleDetailsById(value);
-      form.get('Responsibilities').setValue(data.Responsibilities);
+      form.get('Responsibilities').setValue(data.Role_Responsibilities);
     });
     if (this.viewType === 'view') {
       form.disable();
@@ -352,26 +354,29 @@ export class ProjectFormComponent implements OnInit, OnChanges, AfterViewInit {
 
   addEmployeeNRoles() {
     const control = <FormArray>this.empRoleMapForm.controls['ProjectEmpRoleList'];
-    const addCtrl = this.employeesRoleMap();
+    const addCtrl = this.employeesRoleMap(false);
     control.push(addCtrl);
   }
 
   removeEmployeeNRoles(recordIndex: number, formControl: any) {
     const control = <FormArray>this.empRoleMapForm.controls['ProjectEmpRoleList'];
-    let formControlRawValue = formControl.getRawValue();
+    const formControlRawValue = formControl.getRawValue();
     if (formControlRawValue.Is_Associated) {
-      if (confirm("Are you Sure?")) {
-        const params = {
+      if (confirm('Are you Sure?')) {
+        let params = {
           Employee_Code: formControlRawValue.Employee_Code,
           Role_Code: formControlRawValue.Role_Code,
           BV_Code: formControlRawValue.BV_Code
         };
+        if ( this.viewType === 'Edit' ) {
+          params = _.merge(params, { Project_Code: this.localStorageService.getValue('Project_Code') });
+        }
         this.ApiService.deAssociateEmployeeRoleFromProject(params).subscribe(
           (resp: any) => {
             control.removeAt(recordIndex);
           },
-          error => console.log(error)
-        )
+          error => console.log(error),
+        );
       }
     } else {
       control.removeAt(recordIndex);
@@ -385,52 +390,113 @@ export class ProjectFormComponent implements OnInit, OnChanges, AfterViewInit {
     let APIMethod;
     if (this.viewType === 'Create') {
       params = {
-        User_id: null
+        User_id: null,
       };
       APIMethod = this.ApiService.initialEmployeesByProject(params);
     } else {
       params = {
         Project_Code: this.localStorageService.getValue('Project_Code'),
-        IsActive: 'A'
+        IsActive: 'A',
       };
       APIMethod = this.ApiService.rolesNResponsibilitiesListByProject(params);
     }
     APIMethod.subscribe(
       (resp: any) => {
-        resp.data = _.map(resp.data, (data:any) => {
+        resp.data = _.map(resp.data, (data: any) => {
           data.Is_Associated = true;
           return data;
-        })
+        });
         this.empRoleMapForm.controls['ProjectEmpRoleList'] = this.fb.array([]);
         _.each(resp.data, (data: any) => {
           control = <FormArray>this.empRoleMapForm.controls['ProjectEmpRoleList'];
-          ctrl = this.employeesRoleMap();
+          ctrl = this.employeesRoleMap(true);
           ctrl.patchValue(data);
           control.push(ctrl);
         });
       },
-      error => console.log(error)
-    )
+      error => console.log(error),
+    );
+  }
+
+  //Product Attributes Map
+  mapProductAttributesForm() {
+    let form = this.fb.group({
+      'Attribute_Operation_Required': [{ value: null, disabled: true }, Validators.required],
+      'Attribute_Name': [{ value: null, disabled: true }, Validators.required],
+      'Attribute_Code': [{ value: null, disabled: true }, Validators.required],
+      'Attribute_Value_Type': [{ value: null, disabled: this.viewType === 'view' }, Validators.required],
+      'Attribute_Value1': [{ value: null, disabled: this.viewType === 'view' }, Validators.required],
+      'Attribute_Value2': [{ value: null, disabled: this.viewType === 'view' }],
+      'Attribute_Value3': [{ value: null, disabled: this.viewType === 'view' }],
+      'Attribute_Value4': [{ value: null, disabled: this.viewType === 'view' }],
+      'Attribute_Weight': [{ value: null, disabled: this.viewType === 'view' }, Validators.required],
+      'Is_Valid': [{ value: null, disabled: this.viewType === 'view' }, Validators.required]
+    });
+    // form.get('Attribute_Value_Type').valueChanges.subscribe(data => {
+    //   this.AttributeValidation(data);
+    // })
+    return form;
+  }
+
+  private initPopulateMapProductAttrByProject(stepper: MatStepper, isCreate: boolean) {
+    let params;
+    let APIMethod;
+    if (this.viewType === 'Create' || isCreate) {
+      params = {
+        Func_Code: this.localStorageService.getValue('Func_Code'),
+        Prod_Code: this.localStorageService.getValue('Prod_Code'),
+        IsActive: 'A',
+      };
+      APIMethod = this.ApiService.initialPopulateMapProductAttrByProject(params);
+    } else {
+      params = {
+        detRequirement_Code: this.localStorageService.getValue('DetRequirement_Code'),
+        project_Code: this.localStorageService.getValue('Project_Code'),
+        product_Code: this.localStorageService.getValue('Prod_Code'),
+        detRequirement_Versio: this.localStorageService.getValue('DetRequirement_Version'),
+        isActive: 'A',
+      };
+      APIMethod = this.ApiService.populateProjectDetail(params);
+    }
+    APIMethod.subscribe(
+      (resp: any) => {
+        if ( resp.data && resp.data.length) {
+          resp.data = _.map(resp.data, (data: any) => {
+            data.Is_Associated = true;
+            return data;
+          });
+          this.mapAttributesForm.controls['MapProductAttributesList'] = this.fb.array([]);
+          this.initMapProductAttrDetail(resp.data[0].Attribute_Code, resp.data);
+          this.viewControl.mapProducts = true;
+          this.nextStepper(stepper, 'mapAttributes');
+        } else if ( resp.data && !resp.data.length && this.viewType !== 'Create') {
+          this.initPopulateMapProductAttrByProject(stepper, true);
+        } else {
+          alert('Attributes are not mapped for the Product');
+        }
+      },
+      error => console.log(error),
+    );
   }
 
   disableListOptions(optionsValue: string) {
-    return optionsValue === "400" || optionsValue === "500" ? true : false;
+    return optionsValue === '400' || optionsValue === '500' ? true : false;
   }
 
   initProjectLevelListBySDLSMethod(value: string) {
     const params = {
       KeyValue_Type_Cd: value,
-      KeyValue_Lang_Cd: 'E'
+      KeyValue_Lang_Cd: 'E',
     };
     this.ApiService.keyValueMap(params).subscribe(
       (resp: any) => {
         this.projectLevelList = resp.data;
         this.manageProjectForm.patchValue({
-          Project_Level_code: resp.data.length ? resp.data[0].KeyValue_Val_Cd : ''
+          Project_Level_code: resp.data.length ? resp.data[0].KeyValue_Val_Cd : '',
         });
       },
-      error => console.log(error)
-    )
+      error => console.log(error),
+    );
   }
 
   initParentProjectChange(projectCode: string) {
@@ -442,44 +508,54 @@ export class ProjectFormComponent implements OnInit, OnChanges, AfterViewInit {
       return s.KeyValue_Val_Cd === selectedProjectStatusCode.Project_Status;
     })[0];
     this.manageProjectForm.patchValue({
-      ParentProject_Status: projectStatusValue.KeyValue_Desc
+      ParentProject_Status: projectStatusValue.KeyValue_Desc,
     });
   }
 
   resetProjectForm() {
     if (this.viewType == 'edit')
-      this.manageProjectForm.patchValue({});  
+      this.manageProjectForm.patchValue({});
     else {
       this.manageProjectForm.reset();
     }
   }
 
   preProcessPostData(data: any) {
-    //Date Format Coversion
+    // Date Format Coversion
     data.Project_Plan_Start_Date = data.Project_Plan_Start_Date.format('YYYY-MM-DD');
     data.Project_Plan_End_Date = data.Project_Plan_End_Date.format('YYYY-MM-DD');
-    data.Project_Actl_Start_Date = data.Project_Actl_Start_Date ? data.Project_Actl_Start_Date.format('YYYY-MM-DD') : "NaN-NaN-NaN";
-    data.Project_Actl_End_Date = data.Project_Actl_End_Date ? data.Project_Actl_End_Date.format('YYYY-MM-DD') : "NaN-NaN-NaN";
+    data.Project_Actl_Start_Date = data.Project_Actl_Start_Date ? data.Project_Actl_Start_Date.format('YYYY-MM-DD') : 'NaN-NaN-NaN';
+    data.Project_Actl_End_Date = data.Project_Actl_End_Date ? data.Project_Actl_End_Date.format('YYYY-MM-DD') : 'NaN-NaN-NaN';
     return data;
   }
   initSaveOrUpdate(data: any, stepper: MatStepper) {
+    let APIMethod;
     // Check Form Validation and move forward
     if (this.manageProjectForm.invalid) {
       return;
     }
     data = this.preProcessPostData(data);
     data.ReviewedBy = data.ReviewedBy.toString();
-    this.ApiService.saveOrUpdateProject(data).subscribe(
+    if ( this.viewType === 'Create' ) {
+      APIMethod = this.ApiService.saveProject(data);
+    } else {
+      data.Project_Code = this.localStorageService.getValue('Project_Code');
+      APIMethod = this.ApiService.updateProject(data);
+    }
+    APIMethod.subscribe(
       (resp: any) => {
-        this.localStorageService.setValues({
-          Project_Name: data.Project_Name,
-          Sdlc_Method_Code: data.Sdlc_Method_Code,
-          Project_Code: resp.data
-        });
+        if ( this.viewType === 'Create' ) {
+          this.localStorageService.setValues({
+            Project_Name: data.Project_Name,
+            Sdlc_Method_Code: data.Sdlc_Method_Code,
+            Project_Code: resp.data,
+          });
+        }
         stepper.next();
+        this.viewControl.manageProject = true;
         this.initPopulateEmployeesListByProject();
       },
-      error => console.log(error)
+      error => console.log(error),
     );
   }
 
@@ -488,17 +564,66 @@ export class ProjectFormComponent implements OnInit, OnChanges, AfterViewInit {
     if (this.empRoleMapForm.invalid) {
       return;
     }
-    let proEmpRoleList = _.map(data.controls.ProjectEmpRoleList.getRawValue(), (record: any) => {
+    const proEmpRoleList = _.map(data.controls.ProjectEmpRoleList.getRawValue(), (record: any) => {
       record.Signoff_Ind = !record.Signoff_Ind ? 'N' : 'Y';
-      record.Project_Code = data.controls.Project_Code.value;
-      return _.pick(record, ["Role_Code", "Employee_Code", "BV_Code", "BV_Name", "Responsibilities", "Signoff_Ind", "Project_Code"]);
+      record.Project_Code = this.localStorageService.getValue('Project_Code');
+      return _.pick(record, ['Role_Code', 'Employee_Code', 'BV_Code', 'BV_Name', 'Responsibilities', 'Signoff_Ind', 'Project_Code']);
     });
     this.ApiService.saveOrUpdateEmpRoleMapByProject(proEmpRoleList).subscribe(
       (resp: any) => {
         stepper.next();
+        this.viewControl.employeeRoleMap = true;
         this.initRequirementsNProductsList();
       },
-      error => console.log(error)
+      error => console.log(error),
+    );
+  }
+
+  initMapProductAttrDetail(attr_code: any, proAttrList: any) {
+    let control: any;
+    let ctrl: any;
+    const params = {
+      Attribute_Code: attr_code,
+      IsActive: 'A'
+    }
+    this.ApiService.populateMapProductAttrDetail(params).subscribe(
+      (resp: any) => {
+        _.each(proAttrList, (data: any) => {
+          control = <FormArray>this.mapAttributesForm.controls['MapProductAttributesList'];
+          ctrl = this.mapProductAttributesForm();
+          data.Attribute_Name = resp.data[0].Attribute_Name;
+          data.Attribute_Code = resp.data[0].Attribute_Code;
+          ctrl.patchValue(data);
+          control.push(ctrl);
+        });
+      },
+      error => console.log(error),
+    );
+  }
+
+  onMapAttributesSubmit(data: any, stepper: MatStepper) {
+    // Check Form Validation and move forward
+    if (this.mapAttributesForm.invalid) {
+      return;
+    }
+    const defaultVals = {
+      "Project_Code": this.localStorageService.getValue('Project_Code'),
+      "DetRequirement_Code": this.localStorageService.getValue('DetRequirement_Code'),
+      "DetRequirement_Version": this.localStorageService.getValue('DetRequirement_Version') || '1',
+      "Product_Code": this.localStorageService.getValue('Prod_Code'),
+      "Mandatory_Prod_Ind": "Y",
+      "Scen_Type_Code": "P",
+      "Scen_Priority_Code": "H"
+    };
+    let postData = data.controls.MapProductAttributesList.getRawValue()[0];
+    postData.Attribute_Operation_Required = 'add';
+    postData = _.chain(postData).omit(['Is_Valid']).merge(defaultVals).value();
+    postData.Attribute_Weight = postData.Attribute_Weight.toString();
+    this.ApiService.saveProjectDetail(postData).subscribe(
+      (resp: any) => {
+        stepper.previous();
+      },
+      error => console.log(error),
     );
   }
 
@@ -506,33 +631,78 @@ export class ProjectFormComponent implements OnInit, OnChanges, AfterViewInit {
     this.projectSummary();
   }
 
-  onMapProductsSubmit() {
-    this.projectScopeForm.markAsDirty();
-  }
-
-  onMapAttributesSubmit() {
-    this.projectScopeForm.markAsDirty();
-  }
-
   onAction(action: any) {
     console.log(action);
+  }
+
+  onActionMapProduct(stepper: MatStepper, action: any) {
+    this.localStorageService.setValues({
+      DetRequirement_Code: action.data.DetRequirement_Code,
+      DetRequirement_Name: action.data.DetRequirement_Name,
+      DetRequirement_Version: action.data.DetRequirement_Version
+    });
+    this.mapProductData = action.data.Product;
+    this.viewControl.projectScope = true;
+    this.nextStepper(stepper, 'mapProducts');
+  }
+
+  onActionMapAttribute(stepper: MatStepper, action: any) {
+    this.localStorageService.setValues({
+      Prod_Code: action.data.Prod_Code,
+      Prod_Name: action.data.Prod_Name,
+      Func_Code: action.data.Func_Code,
+      DetRequirement_Code: action.data.DetRequirement_Code,
+      DetRequirement_Name: action.data.DetRequirement_Name,
+      DetRequirement_Version: action.data.DetRequirement_Version
+    });
+    this.initPopulateMapProductAttrByProject(stepper, false);
   }
 
   projectSummary() {
     this.router.navigate(['/pages/project/projects/list']);
   }
 
-  nextStepper(stepper: MatStepper, view: string) {
-    stepper.next();
-    switch(view) {
-      case 'Project':
-        this.initPopulateEmployeesListByProject();
-        break;
-      case 'RoleMap':
+  prevStepper(stepper: MatStepper, view: string) {
+    stepper.previous();
+    switch (view) {
+      case 'projectScope':
         this.initRequirementsNProductsList();
         break;
-      case 'AssignReqNProd':
+      case 'mapProducts':
+        this.initRequirementsNProductsList();
+        break;
+      default:
+        console.log('No Matching...!');
+    }
+  }
+
+  nextStepper(stepper: MatStepper, view: string) {
+    stepper.next();
+    this.viewControl[view] = true;
+    switch (view) {
+      case 'manageProject':
+        this.initPopulateEmployeesListByProject();
+        break;
+      case 'employeeRoleMap':
+        this.initRequirementsNProductsList();
+        break;
+      case 'projectScope':
         this.projectSummary();
+        break;
+      case 'mapProducts':
+        this.mapProductsForm.patchValue({
+          Project_Name: this.localStorageService.getValue('Project_Name'),
+          Project_Code: this.localStorageService.getValue('Project_Code'),
+          DetRequirement_Name: this.localStorageService.getValue('DetRequirement_Name'),
+        });
+        break;
+      case 'mapAttributes':
+        this.mapAttributesForm.patchValue({
+          Project_Name: this.localStorageService.getValue('Project_Name'),
+          Project_Code: this.localStorageService.getValue('Project_Code'),
+          DetRequirement_Name: this.localStorageService.getValue('DetRequirement_Name'),
+          Prod_Name: this.localStorageService.getValue('Prod_Name')
+        });
         break;
       default:
         console.log('No Matching...!');

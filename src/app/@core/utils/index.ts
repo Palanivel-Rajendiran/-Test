@@ -1,7 +1,7 @@
 import { LayoutService } from './layout.service';
 import { StateService } from './state.service';
 import { ApiService } from './api.service';
-import { HttpService } from './http.service'
+import { HttpService } from './http.service';
 import { InterceptorService } from './http.interceptor';
 import { LocalStorageService } from './localStorage.service';
 import { AppDataService } from './app.data.service';
@@ -13,5 +13,5 @@ export {
   HttpService,
   InterceptorService,
   LocalStorageService,
-  AppDataService
+  AppDataService,
 };

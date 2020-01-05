@@ -8,7 +8,7 @@ describe('TestExecutionListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TestExecutionListComponent ]
+      declarations: [ TestExecutionListComponent ],
     })
     .compileComponents();
   }));

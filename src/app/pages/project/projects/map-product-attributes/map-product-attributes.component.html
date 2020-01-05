@@ -1,0 +1,47 @@
+<div class="row productAttrForm mt-3" [formGroup]="productAttrForm">
+    <div class="col-lg-12 productAttrFormBlock">
+        <div [hidden]=true>
+            <input formControlName="Attribute_Code">
+        </div>
+        <div [hidden]=true>
+            <input formControlName="Attribute_Operation_Required">
+        </div>
+        <div class="col-lg-2">
+            <mat-form-field>
+            <input disabled formControlName="Attribute_Name" matInput placeholder="Attribute Name">
+            </mat-form-field>
+        </div>
+        <div class="col-lg-2">
+            <mat-form-field>
+            <mat-select  formControlName="Attribute_Value_Type" placeholder="Attribute Value Type Code *" >
+                <mat-option *ngFor="let item of attributeValueTypeCodes" [value]="item.ValueCode" >
+                {{ item.ValueDesc }}
+                </mat-option>
+            </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="col-lg-2">
+            <mat-form-field>
+            <input disabled formControlName="Attribute_Value1" matInput placeholder="Attribute Value1*">
+            </mat-form-field>
+        </div>
+        <div class="col-lg-2">
+            <mat-form-field>
+            <input disabled formControlName="Attribute_Value2" matInput placeholder="Attribute Value2">
+            </mat-form-field>
+        </div>
+        <div class="col-lg-2">
+            <mat-form-field>
+            <input disabled formControlName="Attribute_Value3" matInput placeholder="Attribute Value3">
+            </mat-form-field>
+        </div>
+        <div class="col-lg-2">
+            <mat-form-field>
+            <input disabled formControlName="Attribute_Value4" matInput placeholder="Attribute Value4">
+            </mat-form-field>
+        </div>
+        <div class="col-lg-1">
+            <input type="checkbox" class="selectAllAttr" formControlName="Is_Valid" [disabled]="viewType === 'view' ? true : false">
+        </div>
+    </div>
+</div>

@@ -1,8 +1,8 @@
 <nb-card>
     <nb-card-body>
-      <mat-horizontal-stepper linear labelPosition="bottom" #stepper>
+      <mat-horizontal-stepper [linear]="true" labelPosition="bottom" #stepper>
         <!-- Manage Projects Starts Here -->
-        <mat-step [stepControl]="manageProjectForm" label="Manage Project" [editable]="false" [completed]="false">
+        <mat-step [stepControl]="manageProjectForm" label="Manage Project" [completed]="viewControl.manageProject">
           <form class="row" [formGroup]="manageProjectForm" (ngSubmit)="initSaveOrUpdate(manageProjectForm.value, stepper)">
             <div class="col-lg-12">
               <div class="row">
@@ -193,14 +193,14 @@
               <button nbButton status="danger" class="btn-left mr-1" type="button" (click)="projectSummary()">Cancel</button>
               <button nbButton status="warning" class="btn-left" type="button" [disabled]="true" (click)="resetForm()">Reset</button>
               <button *ngIf="viewType !== 'View'" nbButton class="btn-right" type="submit">Save & Next</button>
-              <button *ngIf="viewType === 'View'" nbButton class="btn-right" type="button" (click)="nextStepper(stepper, 'Project')">Next</button>
+              <button *ngIf="viewType === 'View'" nbButton class="btn-right" type="button" (click)="nextStepper(stepper, 'manageProject')">Next</button>
             </div>
           </form>
         </mat-step>
         <!-- Manage Projects Ends Here -->
 
         <!-- Employee Roles & Responsibility Starts Here -->
-        <mat-step [stepControl]="empRoleMapForm" label="Employee Role Map" [editable]="false" [completed]="false">
+        <mat-step [stepControl]="empRoleMapForm" label="Employee Role Map" [completed]="viewControl.employeeRoleMap">
           <form class="row empRoleMapForm" [formGroup]="empRoleMapForm" (ngSubmit)="onEmployeeRoleMapSubmit(empRoleMapForm, stepper)">
             <div class="col-lg-12">
               <div class="row">
@@ -212,35 +212,37 @@
               </div>
             </div>
             <mat-toolbar>Assign Employees To This Project</mat-toolbar>
-            <div class="row employeesAssociationBlock">
-              <div class="col-lg-12">
-                <div formArrayName="ProjectEmpRoleList">
-                  <div *ngFor="let controls of empRoleMapForm.controls.ProjectEmpRoleList.controls; let i=index">
-                      <div class="row">
-                        <div class="col-lg-10">
-                          <span [formGroupName]="i">
-                            <ngx-project-employee-role-map-list [group]="controls"></ngx-project-employee-role-map-list>
-                          </span>
+            <div class="col-lg-12">
+              <div class="row employeesAssociationBlock">
+                <div class="col-lg-12">
+                  <div formArrayName="ProjectEmpRoleList">
+                    <div *ngFor="let controls of empRoleMapForm.controls.ProjectEmpRoleList.controls; let i=index">
+                        <div class="row">
+                          <div class="col-lg-10">
+                            <span [formGroupName]="i">
+                              <ngx-project-employee-role-map-list [group]="controls"></ngx-project-employee-role-map-list>
+                            </span>
+                          </div>
+                          <div class="col-lg-2">
+                            <i *ngIf="empRoleMapForm.controls.ProjectEmpRoleList.controls.length > 1 && viewType !== 'View'" (click)="removeEmployeeNRoles(i, controls)" class="nb-trash btn-left" title="Delete"></i>
+                            <i *ngIf="i + 1 === empRoleMapForm.controls.ProjectEmpRoleList.controls.length && viewType !== 'View'" (click)="addEmployeeNRoles()" class="ion-plus-circled align-right-plus" title="Add"></i>
+                          </div>
                         </div>
-                        <div class="col-lg-2">
-                          <i *ngIf="empRoleMapForm.controls.ProjectEmpRoleList.controls.length > 1" (click)="removeEmployeeNRoles(i, controls)" class="nb-trash" title="Delete"></i>
-                          <i *ngIf="i + 1 === empRoleMapForm.controls.ProjectEmpRoleList.controls.length" (click)="addEmployeeNRoles()" class="ion-plus-circled align-right-add" title="Add"></i>
-                        </div>
-                      </div>
-                  </div>
-                </div>    
+                    </div>
+                  </div>    
+                </div>
               </div>
             </div>
-            <div class="text-center col-lg-12">
+            <div class="text-center col-lg-12 mt-3">
               <button nbButton status="danger" class="btn-left mr-1" type="button" (click)="projectSummary()">Cancel</button>
               <button nbButton status="warning" class="btn-left" type="button" [disabled]="true" (click)="resetForm()">Reset</button>
               <button *ngIf="viewType !== 'View'" nbButton class="btn-right" type="submit">Save & Next</button>
-              <button *ngIf="viewType === 'View'" nbButton class="btn-right" type="button" (click)="nextStepper(stepper, 'RoleMap')">Next</button>
+              <button *ngIf="viewType === 'View'" nbButton class="btn-right" type="button" (click)="nextStepper(stepper, 'employeeRoleMap')">Next</button>
             </div>
           </form>
         </mat-step>
         <!-- Employee Roles & Responsibility Starts Here -->
-        <mat-step [stepControl]="projectScopeForm" label="Project Scope" [editable]="false" [completed]="false">
+        <mat-step [stepControl]="projectScopeForm" label="Project Scope" [completed]="viewControl.projectScope">
           <form class="row" [formGroup]="projectScopeForm" (ngSubmit)="onProjectScopeSubmit(projectScopeForm.value)">
             <div class="col-lg-12">
               <div class="row">
@@ -251,15 +253,20 @@
                 </div>
               </div>
             </div>
-            <ngx-table-view [settings]="requirementsNProductsSettings" [data]="requirementsNProductsData" (action)="onAction($event)"></ngx-table-view>
+            <div class="col-lg-12">
+              <div class="row">
+                <ngx-table-view [settings]="requirementsNProductsSettings" [data]="requirementsNProductsData" (action)="onActionMapProduct(stepper, $event)"></ngx-table-view>
+              </div>
+            </div>
             <div class="text-center col-lg-12">
-                <button *ngIf="viewType !== 'View'" nbButton type="submit" class="btn-right">Save & Submit</button>
-                <button *ngIf="viewType === 'View'" nbButton type="button" class="btn-right" (click)="nextStepper(stepper, 'AssignReqNProd')">Finish</button>
+                <button *ngIf="viewType === 'Create'" nbButton type="submit" class="btn-right">Save & Submit</button>
+                <button *ngIf="viewType === 'Edit'" nbButton type="submit" class="btn-right">Save & Update</button>
+                <button *ngIf="viewType === 'View'" nbButton type="button" class="btn-right" (click)="nextStepper(stepper, 'projectScope')">Finish</button>
             </div>
           </form>
         </mat-step>
-        <mat-step [stepControl]="mapProductsForm" label="Map Products" [editable]="false" [completed]="false">
-          <form class="row" [formGroup]="mapProductsForm" (ngSubmit)="onMapProductsSubmit(mapProductsForm.value)">
+        <mat-step [stepControl]="mapProductsForm" label="Map Products" [completed]="viewControl.mapProducts">
+          <form class="row" [formGroup]="mapProductsForm">
             <div class="col-lg-12">
               <div class="row">
                 <div class="col-lg-6">
@@ -267,31 +274,73 @@
                     <input matInput placeholder="Project Name" formControlName="Project_Name">
                   </mat-form-field>
                 </div>
-              </div>
-            </div>
-            <ngx-table-view [settings]="mapProductSettings" [data]="mapProductData" (action)="onAction($event)"></ngx-table-view>
-            <div class="text-center col-lg-12">
-              <button nbButton type="submit" class="btn-right" type="submit">Map Product</button>
-            </div>
-          </form>
-        </mat-step>
-        <mat-step [stepControl]="mapAttributesForm" label="Map Attributes" [editable]="false" [completed]="false">
-          <form class="row" [formGroup]="mapAttributesForm" (ngSubmit)="onMapAttributesSubmit(mapAttributesForm.value)">
-            <div class="col-lg-12">
-              <div class="row">
                 <div class="col-lg-6">
                   <mat-form-field class="full-width">
-                    <input matInput placeholder="Project Name" formControlName="Project_Name">
+                    <input matInput placeholder="Requirement Name" formControlName="DetRequirement_Name">
                   </mat-form-field>
                 </div>
               </div>
             </div>
-            <ngx-table-view [settings]="mapAttributeSettings" [data]="mapAttributeData" (action)="onAction($event)"></ngx-table-view>
+            <div class="col-lg-12">
+              <ngx-table-view [settings]="mapProductSettings" [data]="mapProductData" (action)="onActionMapAttribute(stepper, $event)"></ngx-table-view>
+            </div>
             <div class="text-center col-lg-12">
-              <button nbButton type="submit" class="btn-right" type="submit">Map Attributes</button>
+              <button *ngIf="viewType !== 'View'" nbButton type="button" class="btn-right" (click)="prevStepper(stepper, 'projectScope')">Save & Back</button>
+              <button *ngIf="viewType === 'View'" nbButton type="button" class="btn-right" (click)="prevStepper(stepper, 'projectScope')">Okay</button>
             </div>
           </form>
         </mat-step>
+         <!-- Employee Roles & Responsibility Starts Here -->
+         <mat-step [stepControl]="mapAttributesForm" label="Map Attributes" [completed]="viewControl.mapAttributes">
+            <form class="row mapAttributesForm" [formGroup]="mapAttributesForm" (ngSubmit)="onMapAttributesSubmit(mapAttributesForm, stepper)">
+              <div class="col-lg-12">
+                <div class="row">
+                  <div class="col-lg-6">
+                    <mat-form-field class="full-width">
+                      <input matInput placeholder="Project Name" formControlName="Project_Name">
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-6">
+                    <mat-form-field class="full-width">
+                      <input matInput placeholder="Requirement Name" formControlName="DetRequirement_Name">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-lg-6">
+                    <mat-form-field class="full-width">
+                      <input matInput placeholder="Product Name" formControlName="Prod_Name">
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <mat-toolbar>Map Attributes</mat-toolbar>
+              <div class="col-lg-12">
+                <div class="row mapAttributesBlock">
+                  <div class="col-lg-12">
+                    <div formArrayName="MapProductAttributesList">
+                      <div *ngFor="let controls of mapAttributesForm.controls.MapProductAttributesList.controls; let i=index">
+                          <div class="row">
+                            <div class="col-lg-11">
+                              <span [formGroupName]="i">
+                                <ngx-map-product-attributes [group]="controls"></ngx-map-product-attributes>
+                              </span>
+                            </div>
+                            <!-- <div class="col-lg-1">
+                              <i *ngIf="mapAttributesForm.controls.MapProductAttributesList.controls.length > 1" (click)="removeEmployeeNRoles(i, controls)" class="nb-trash btn-left delete-prod-attr" title="Delete"></i>
+                            </div> -->
+                          </div>
+                      </div>
+                    </div>    
+                  </div>
+                </div>
+              </div>
+              <div class="text-center col-lg-12 mt-3">
+                <button *ngIf="viewType !== 'View'" nbButton class="btn-right" type="submit">Save & Back</button>
+                <button *ngIf="viewType === 'View'" nbButton class="btn-right" type="button" (click)="prevStepper(stepper, 'mapProducts')">Okay</button>
+              </div>
+            </form>
+          </mat-step>
       </mat-horizontal-stepper>
     </nb-card-body>
   </nb-card>

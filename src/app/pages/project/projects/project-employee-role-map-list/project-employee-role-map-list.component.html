@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-md-2">
                 <mat-form-field>
-                    <mat-select formControlName="Role_Code" placeholder="Role *">
+                    <mat-select formControlName="Role_Code" placeholder="Role *" (selectionChange)="employeesListByRole($event.value)">
                         <mat-option *ngFor="let role of rolesList" [value]="role.Role_Code">
                         {{ role.Role_Name }}
                         </mat-option>

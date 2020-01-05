@@ -24,7 +24,7 @@ import { TestExecutionListComponent } from './test-progress/test-execution/test-
 import { TestExecutionFormComponent } from './test-progress/test-execution/test-execution-form/test-execution-form.component';
 import { TableViewComponent } from './common/table-view/table-view.component';
 // Material Angular Imports
-//TODO : Have to move into common Module
+// TODO : Have to move into common Module
 import {
   MatInputModule,
   MatAutocompleteModule,
@@ -35,11 +35,12 @@ import {
   MatStepperModule,
   MAT_DATE_FORMATS,
   DateAdapter,
-  MAT_DATE_LOCALE
+  MAT_DATE_LOCALE,
 } from '@angular/material';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
 import { AppConstants } from '../@core/utils/constants';
 import { ProjectEmployeeRoleMapListComponent } from './project/projects/project-employee-role-map-list/project-employee-role-map-list.component';
+import { MapProductAttributesComponent } from './project/projects/map-product-attributes/map-product-attributes.component';
 
 @NgModule({
   imports: [
@@ -78,9 +79,11 @@ import { ProjectEmployeeRoleMapListComponent } from './project/projects/project-
     TestExecutionListComponent,
     TestExecutionFormComponent,
     ProjectEmployeeRoleMapListComponent,
+    MapProductAttributesComponent,
   ],
   exports: [
     ProjectEmployeeRoleMapListComponent,
+    MapProductAttributesComponent,
   ],
   providers: [
     {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
