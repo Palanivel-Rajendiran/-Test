@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../@core/utils';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'ngx-defects',
@@ -50,7 +51,7 @@ export class DefectsComponent implements OnInit {
   data: any[];
 
   // Fetch the Data From API Service
-  constructor(private ApiService: ApiService) {
+  constructor(private ApiService: ApiService, private router: Router) {
     this.ApiService.defectsList().subscribe(
       resp => this.processApiResponse(resp),
       error => console.log(error),
@@ -63,6 +64,10 @@ export class DefectsComponent implements OnInit {
   // Process the response if any & assign to var to view
   processApiResponse(resp: any) {
     this.data = resp.data;
+  }
+  
+  onAddNew() {
+    this.router.navigate(['/pages/test-progress/defects/form-view']);
   }
 
 }

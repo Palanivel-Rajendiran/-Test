@@ -41,6 +41,7 @@ import {MomentDateAdapter} from '@angular/material-moment-adapter';
 import { AppConstants } from '../@core/utils/constants';
 import { ProjectEmployeeRoleMapListComponent } from './project/projects/project-employee-role-map-list/project-employee-role-map-list.component';
 import { MapProductAttributesComponent } from './project/projects/map-product-attributes/map-product-attributes.component';
+import { DefectFormComponent } from './test-progress/defects/defect-form/defect-form.component';
 
 @NgModule({
   imports: [
@@ -80,6 +81,7 @@ import { MapProductAttributesComponent } from './project/projects/map-product-at
     TestExecutionFormComponent,
     ProjectEmployeeRoleMapListComponent,
     MapProductAttributesComponent,
+    DefectFormComponent,
   ],
   exports: [
     ProjectEmployeeRoleMapListComponent,

@@ -20,6 +20,7 @@ import { TestExecutionComponent } from './test-progress/test-execution/test-exec
 import { TestExecutionListComponent } from './test-progress/test-execution/test-execution-list/test-execution-list.component';
 import { TestExecutionFormComponent } from './test-progress/test-execution/test-execution-form/test-execution-form.component';
 import { DefectsComponent } from './test-progress/defects/defects.component';
+import { DefectFormComponent } from './test-progress/defects/defect-form/defect-form.component';
 import { TestGenerationComponent } from './test-progress/test-generation/test-generation.component';
 
 const routes: Routes = [{
@@ -151,7 +152,21 @@ const routes: Routes = [{
         },
         {
           path: 'defects',
-          component: DefectsComponent,
+          children: [
+            {
+              path: 'list',
+              component: DefectsComponent,
+            },
+            {
+              path: 'form-view',
+              component: DefectFormComponent,
+            },
+            {
+              path: '',
+              redirectTo: 'list',
+              pathMatch: 'full',
+            },
+          ],
         },
         {
           path: 'test-generation',

@@ -105,4 +105,8 @@ export class TestPlanComponent implements OnInit {
     console.log('TEst Plan ', data);
   }
 
+  onAddNew() {
+    this.router.navigate(['/pages/project/test-plan/form-view']);
+  }
+
 }

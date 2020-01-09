@@ -106,4 +106,8 @@ export class TestExecutionListComponent implements OnInit {
     console.log('TEst Plan ', data);
   }
 
+  onAddNew() {
+    this.router.navigate(['/pages/test-progress/test-execution/form-view']);
+  }
+
 }

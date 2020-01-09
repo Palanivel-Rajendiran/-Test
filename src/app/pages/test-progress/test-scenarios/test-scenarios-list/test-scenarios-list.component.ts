@@ -105,4 +105,8 @@ export class TestScenariosListComponent implements OnInit {
     console.log('TEst Plan ', data);
   }
 
+  onAddNew() {
+    this.router.navigate(['/pages/test-progress/test-scenarios/form-view']);
+  }
+
 }

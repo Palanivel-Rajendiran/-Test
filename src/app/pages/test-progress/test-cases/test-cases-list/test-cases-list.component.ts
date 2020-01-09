@@ -109,4 +109,8 @@ export class TestCasesListComponent implements OnInit {
     console.log('TEst Plan ', data);
   }
 
+  onAddNew() {
+    this.router.navigate(['/pages/test-progress/test-cases/form-view']);
+  }
+
 }
